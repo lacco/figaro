@@ -30,7 +30,7 @@ module Figaro
     end
 
     def has_key?(key)
-      ::ENV.any? { |k, _| k.downcase == key }
+      _env_.has_key?(key.upcase)
     end
 
     def missing_key!(key)
@@ -38,8 +38,11 @@ module Figaro
     end
 
     def get_value(key)
-      _, value = ::ENV.detect { |k, _| k.downcase == key }
-      value
+      _env_[key.upcase]
+    end
+
+    def _env_
+      @_env_ ||= ::ENV.inject({}){|memo, (k,v)| memo[k.upcase] = v; memo}
     end
   end
 end
